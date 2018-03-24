@@ -7,3 +7,8 @@ gem 'elasticsearch'
 gem 'curb'
 gem 'dotenv'
 gem 'thor'
+
+group :test do
+  gem 'minitest', '~>5.11'
+  gem 'webmock', '~>3.3'
+end
