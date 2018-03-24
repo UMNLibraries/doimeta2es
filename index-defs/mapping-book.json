@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "doi": {"type": "text", "index": false},
+    "full_title": {"type": "text"},
+    "abbrev_title": {"type": "text"},
+    "series_title": {"type": "text"},
+    "issns": {
+      "type": "nested",
+      "properties": {
+        "issn": {"type": "text"},
+        "format": {"type": "text"}
+      }
+    },
+    "isbns": {
+      "type": "nested",
+      "properties": {
+        "isbn": {"type": "text"},
+        "format": {"type": "text"}
+      }
+    },
+    "pagination": {"type": "text"},
+    "contributors": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "given": {"type": "text"},
+            "surname": {"type": "text"}
+          }
+        },
+        "contributor_role": {"type": "text"},
+        "first_author": {"type": "boolean"},
+        "sequence": {"type": "integer"}
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "text"},
+        "pagination": {"type": "text"},
+        "chapter_number": {"type": "text"}
+      }
+    },
+    "volume": {"type": "text"},
+    "issue": {"type": "text"},
+    "publication_date": {"type": "date"},
+    "publisher": {"type": "text"},
+    "url": {"type": "text"},
+    "meta_date": {"type": "date"}
+  }
+}

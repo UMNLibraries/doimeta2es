@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require 'dotenv/load'
+require_relative File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib' , 'doimeta2es'))
+
+module DOIMeta2ES
+  class CLI < Thor
+    desc "Index metadata", "Index metadata from files on disk or from stdin"
+    long_desc <<-LONGDESC
+    Parses and indexes Unixref XML or Citeproc JSON DOI metadata files
+
+    If --stdin is supplied, input is read from STDIN.
+    LONGDESC
+
+    option :batchsize, required: false, type: :numeric, default: 100, desc: 'Batch size for Elasticsearch bulk operations'
+    option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
+    option :verbose, type: :boolean, default: false, desc: 'Show verbose output from Elasticsearch'
+
+    def index(*files)
+      es = Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'), log: options[:verbose]
+      client = DOIMeta2ES::Transport.new es
+
+      if options[:stdin]
+        result = client.index $stdin.read
+      else
+        client.index_batch files, options[:batchsize].to_i
+      end
+
+    end
+
+    default_command :index
+  end
+end
+
+DOIMeta2ES::CLI.start(ARGV)
