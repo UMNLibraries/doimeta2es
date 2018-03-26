@@ -6,13 +6,13 @@ module DOIMeta2ES
   class Transport
     def initialize(es=nil)
       raise ArgumentError.new('es must be an Elasticsearch::Client') if es && !es.kind_of?(Elasticsearch::Transport::Client)
-      
+
       # Connect to the supplied client or localhost
       @es = es || (Elasticsearch::Client.new host: 'localhost:9200')
     end
 
     def index(str)
-      # Still need to determine type of source  
+      # Still need to determine type of source
       meta = str_parser str
       adapter = Adapter.new meta
       result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi, body: adapter.to_json
@@ -22,26 +22,33 @@ module DOIMeta2ES
       errors = []
       begin
         filenames.each_slice(batch_size) do |batch|
-          puts "Starting batch, count #{batch.count}"
-          bulk_body = []
-          batch.each do |infile|
-            begin
-              meta = file_parser(infile)
-              adapter = Adapter.new meta
+          begin
+            bulk_body = []
+            batch.each do |infile|
+              begin
+                meta = file_parser(infile)
+                adapter = Adapter.new meta
 
-              # Add a hash from this parsed document to the bulk action's array
-              bulk_body << {index: {_index: adapter.target_index, _type: adapter.target_index, _id: meta.doi, data: adapter.to_h }}
+                # Add a hash from this parsed document to the bulk action's array
+                bulk_body << {index: {_index: adapter.target_index, _type: adapter.target_index, _id: meta.doi, data: adapter.to_h }}
 
-            rescue Errno::ENOENT
-              errors << "File #{infile} is unreadable or does not exist"
+              rescue Errno::ENOENT
+                errors << "File #{infile} is unreadable or does not exist"
+              rescue StandardError => e
+                errors << "An error occurred with file #{infile}: #{e.message}"
+                next
+              end
             end
+            # Write the batch into the index
+            puts "Executing bulk"
+            @es.bulk(body: bulk_body)
+          rescue StandardError => e
+            errors << "A batch error occurred: #{e.message}"
+            next
           end
-          # Write the batch into the index
-          puts "Executing bulk"
-          @es.bulk(body: bulk_body)
         end
-      #rescue StandardError => e
-      #  errors << "An error occurred: #{e.message}"
+      rescue StandardError => e
+        errors << "An error occurred: #{e.message}"
       end
     end
 
