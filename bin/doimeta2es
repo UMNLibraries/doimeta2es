@@ -31,6 +31,32 @@ module DOIMeta2ES
 
     end
 
+    desc "Lookup a DOI", "Lookup metadata for a DOI identifier"
+    long_desc <<-LONGDESC
+    Performs a metadata lookup for the DOI provided by --doi=<identifier> in the format
+    requested by --type=<type>
+    LONGDESC
+
+    option :doi, required: true, type: :string, desc: 'Requested DOI'
+    option :format, required: false, type: :string, default: 'json'
+    option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch'
+    def lookup()
+      (formats = {
+        'json' => SimpleDOI::CITEPROC_JSON,
+        'xml' => SimpleDOI::UNIXREF_XML
+      }).default = SimpleDOI::CITEPROC_JSON
+      raise ArgumentError.new("--format must be one of #{formats.keys.join(', ')}") unless formats.keys.include?(options[:format])
+
+      doi = SimpleDOI::DOI.new(options[:doi].strip)
+      doi.lookup formats[options[:format]]
+
+      if options[:index]
+        es = es_client options[:verbose]
+        client = DOIMeta2ES::Transport.new es
+        client.index doi.body
+      end
+    end
+
     default_command :index
 
     private
