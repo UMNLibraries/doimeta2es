@@ -20,7 +20,7 @@ module DOIMeta2ES
     option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
 
     def index(*files)
-      es = Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'), log: options[:verbose]
+      es = es_client options[:verbose]
       client = DOIMeta2ES::Transport.new es
 
       if options[:stdin]
@@ -32,6 +32,11 @@ module DOIMeta2ES
     end
 
     default_command :index
+
+    private
+    def es_client(verbose=false)
+      Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'), log: verbose
+    end
   end
 end
 
