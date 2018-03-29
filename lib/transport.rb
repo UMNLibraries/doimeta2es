@@ -12,14 +12,17 @@ module DOIMeta2ES
     end
 
     def index(str)
-      # Still need to determine type of source
-      meta = str_parser str
-      adapter = Adapter.new meta
-      result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi, body: adapter.to_json
+      begin
+        meta = str_parser str
+        adapter = Adapter.new meta
+        result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi, body: adapter.to_json
+      rescue StandardError => e
+      end
     end
 
     def index_batch(filenames=[], batch_size=100)
-      errors = []
+      report = Hash.new(0)
+      report[:errors] = []
       begin
         filenames.each_slice(batch_size) do |batch|
           begin
@@ -28,28 +31,29 @@ module DOIMeta2ES
               begin
                 meta = file_parser(infile)
                 adapter = Adapter.new meta
+                idx = adapter.target_index
 
                 # Add a hash from this parsed document to the bulk action's array
-                bulk_body << {index: {_index: adapter.target_index, _type: adapter.target_index, _id: meta.doi, data: adapter.to_h }}
-
+                bulk_body << {index: {_index: idx, _type: idx, _id: meta.doi, data: adapter.to_h }}
+                report[idx.to_sym] += 1
               rescue Errno::ENOENT
-                errors << "File #{infile} is unreadable or does not exist"
+                report[:errors] << "File #{infile} is unreadable or does not exist"
               rescue StandardError => e
-                errors << "An error occurred with file #{infile}: #{e.message}"
+                report[:errors] << "An error occurred with file #{infile}: #{e.message}"
                 next
               end
             end
             # Write the batch into the index
-            puts "Executing bulk"
             @es.bulk(body: bulk_body)
           rescue StandardError => e
-            errors << "A batch error occurred: #{e.message}"
+            report[:errors] << "A batch error occurred: #{e.message}"
             next
           end
         end
       rescue StandardError => e
-        errors << "An error occurred: #{e.message}"
+        report[:errors] << "An error occurred: #{e.message}"
       end
+      report
     end
 
     protected

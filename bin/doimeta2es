@@ -26,7 +26,8 @@ module DOIMeta2ES
       if options[:stdin]
         result = client.index $stdin.read
       else
-        client.index_batch files, options[:batchsize].to_i
+        report = client.index_batch files, options[:batchsize].to_i
+        puts report.inspect
       end
 
     end
@@ -49,6 +50,7 @@ module DOIMeta2ES
 
       doi = SimpleDOI::DOI.new(options[:doi].strip)
       doi.lookup formats[options[:format]]
+      puts doi.body unless doi.body.strip.empty? rescue nil
 
       if options[:index]
         es = es_client options[:verbose]
