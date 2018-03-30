@@ -1,0 +1,60 @@
+GIT
+  remote: https://github.com/UMNLibraries/simpledoi-ruby.git
+  revision: 5da2527410ad5ae09df4a7e1333972f2ea182a7d
+  branch: master
+  specs:
+    simple_doi (1.2.0)
+      json
+      nokogiri
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    curb (0.9.4)
+    dotenv (2.2.1)
+    elasticsearch (6.0.2)
+      elasticsearch-api (= 6.0.2)
+      elasticsearch-transport (= 6.0.2)
+    elasticsearch-api (6.0.2)
+      multi_json
+    elasticsearch-transport (6.0.2)
+      faraday
+      multi_json
+    faraday (0.14.0)
+      multipart-post (>= 1.2, < 3)
+    hashdiff (0.3.7)
+    json (2.1.0)
+    mini_portile2 (2.3.0)
+    minitest (5.11.3)
+    multi_json (1.13.1)
+    multipart-post (2.0.0)
+    nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
+    public_suffix (3.0.2)
+    rake (12.3.1)
+    safe_yaml (1.0.4)
+    thor (0.20.0)
+    webmock (3.3.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  curb
+  dotenv
+  elasticsearch
+  minitest (~> 5.11)
+  rake
+  simple_doi!
+  thor
+  webmock (~> 3.3)
+
+BUNDLED WITH
+   1.16.1
