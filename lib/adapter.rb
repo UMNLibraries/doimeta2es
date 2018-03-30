@@ -40,8 +40,12 @@ module DOIMeta2ES
       @adapter_class ||= self.class
     end
 
+    def type
+      @adapter_class.to_s.split('::').pop
+    end
+
     def target_index
-      @metadata_parser.book? || @metadata_parser.book_series? || @metadata_parser.book_chapter? ? 'book' : 'article'
+      type =~ /^Book/ ? 'book' : 'article'
     end
 
     def to_h
