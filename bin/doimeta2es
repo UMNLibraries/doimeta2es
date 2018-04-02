@@ -74,12 +74,12 @@ module DOIMeta2ES
         mappingfile = "#{INDEX_DEFS}/mapping/#{options[:index]}.json"
         if File.exists? idxfile
           begin
-            es.indices.create options[:index], body: File.read(idxfile)
+            es.indices.create index: options[:index], body: File.read(idxfile)
           rescue Elasticsearch::Transport::Transport::Errors::BadRequest
           end
 
           if File.exists? mappingfile
-            es.indices.put_mapping index: options[:index], body: file.read(mappingfile)
+            es.indices.put_mapping index: options[:index], type: options[:index], body: File.read(mappingfile)
           end
         else
           puts "No such index file #{idxfile}"

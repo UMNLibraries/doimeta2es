@@ -10,6 +10,12 @@ The executable `bin/doimeta2es` may be used to index metadata filesl (XML or
 JSON) on disk or to lookup a DOI's metadata and optionally index it.
 
 ```shell
+# Create indexes and mappings
+$ bundle exec bin/doimeta2es setup
+
+# Just one specific index
+$ bundle exec bin/doimeta2es setup --index=article
+
 # Bulk indexing of files on disk
 # Note: this gets slow with tens of thousands of files, and may
 # even exceed shell expansion limits
