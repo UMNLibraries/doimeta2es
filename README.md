@@ -6,7 +6,7 @@ $ bundle install
 ```
 
 ## Command line usage
-The executable `bin/doimeta2es` may be used to index metadata filesl (XML or 
+The executable `bin/doimeta2es` may be used to index metadata filesl (XML or
 JSON) on disk or to lookup a DOI's metadata and optionally index it.
 
 ```shell
@@ -24,3 +24,12 @@ $ cat /path/to/meta.xml | some-pipeline-processing | bundle exec bin/doimeta2es 
 # Lookup a single DOI and index it
 $ bundle exec bin/doimeta2es lookup --doi=10.9999/abcd-efgh.123.456 --index
 ```
+
+## Basic Configuration
+Environment variables for configuration may be handled by Dotenv in a `.env`
+file.
+
+### Environment Variables
+Variable                     | Default                  | Notes
+-------------                | -------                  | -----
+`ELASTICSEARCH_URL`          | `http://localhost:9200/` | Full URL of the Elasticsearch service to connect to
