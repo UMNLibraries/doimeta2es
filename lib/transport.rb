@@ -15,7 +15,7 @@ module DOIMeta2ES
       begin
         meta = str_parser str
         adapter = Adapter.new meta
-        result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi, body: adapter.to_json
+        result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue StandardError => e
       end
     end
@@ -34,7 +34,7 @@ module DOIMeta2ES
                 idx = adapter.target_index
 
                 # Add a hash from this parsed document to the bulk action's array
-                bulk_body << {index: {_index: idx, _type: idx, _id: meta.doi, data: adapter.to_h }}
+                bulk_body << {index: {_index: idx, _type: idx, _id: meta.doi.upcase, data: adapter.to_h }}
                 report[idx.to_sym] += 1
               rescue Errno::ENOENT
                 report[:errors] << "File #{infile} is unreadable or does not exist"

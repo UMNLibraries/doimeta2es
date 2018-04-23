@@ -70,8 +70,8 @@ module DOIMeta2ES
       es = es_client(options[:verbose])
 
       if options[:index]
-        idxfile = "#{INDEX_DEFS}/index/#{options[:index]}.json"
-        mappingfile = "#{INDEX_DEFS}/mapping/#{options[:index]}.json"
+        idxfile = File.expand_path("#{INDEX_DEFS}/index/#{options[:index]}.json")
+        mappingfile = File.expand_path("#{INDEX_DEFS}/mapping/#{options[:index]}.json")
         if File.exists? idxfile
           begin
             es.indices.create index: options[:index], body: File.read(idxfile)
@@ -88,7 +88,8 @@ module DOIMeta2ES
         Dir.glob("#{INDEX_DEFS}/index/*.json").each do |idxfile|
           begin
             idx = File.basename idxfile, '.json'
-            mappingfile = "#{INDEX_DEFS}/mapping/#{idx}.json"
+            idxfile = File.expand_path(idxfile)
+            mappingfile = File.expand_path("#{INDEX_DEFS}/mapping/#{idx}.json")
             begin
               puts "Creating index #{idx} from #{idxfile}"
               es.indices.create index: idx, body: File.read(idxfile)
