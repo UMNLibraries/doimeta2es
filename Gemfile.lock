@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/UMNLibraries/simpledoi-ruby.git
-  revision: 5da2527410ad5ae09df4a7e1333972f2ea182a7d
+  revision: f2f12cf8511daa278be3507cd5aa1b3e44d9cd90
   branch: master
   specs:
-    simple_doi (1.2.0)
+    simple_doi (1.2.1)
       json
       nokogiri
 
