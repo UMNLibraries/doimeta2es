@@ -38,11 +38,12 @@ module DOIMeta2ES
     long_desc <<-LONGDESC
     Performs a metadata lookup for the DOI provided by --doi=<identifier> in the format
     requested by --type=<type>
+    If --index is specified, the output from Elasticsearch will be printed, otherwise the returned metadata is displayed
     LONGDESC
 
     option :doi, required: true, type: :string, desc: 'Requested DOI'
     option :format, required: false, type: :string, default: 'json'
-    option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch'
+    option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch and print Elasticsearch JSON output'
     def lookup()
       (formats = {
         'json' => SimpleDOI::CITEPROC_JSON,
