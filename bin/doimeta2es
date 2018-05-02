@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'dotenv/load'
+require 'json'
 require_relative File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib' , 'doimeta2es'))
 
 module DOIMeta2ES
@@ -51,12 +52,14 @@ module DOIMeta2ES
 
       doi = SimpleDOI::DOI.new(options[:doi].strip)
       doi.lookup formats[options[:format]]
-      puts doi.body unless doi.body.strip.empty? rescue nil
+      # Dump the returned string unless we will directly index it
+      puts doi.body unless (doi.body.strip.empty? || options[:index]) rescue nil
 
       if options[:index]
         es = es_client options[:verbose]
         client = DOIMeta2ES::Transport.new es
-        client.index doi.body
+        # Dump the output from Elasticsearch
+        puts client.index(doi.body).to_json
       end
     end
 
