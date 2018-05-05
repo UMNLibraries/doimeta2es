@@ -16,6 +16,8 @@ module DOIMeta2ES
         meta = str_parser str
         adapter = Adapter.new meta
         result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
+      rescue NoParserFoundError => e
+        puts e.inspect
       rescue StandardError => e
       end
     end
@@ -82,7 +84,9 @@ module DOIMeta2ES
         SimpleDOI::MetadataParser::CiteprocJSONParser => [[0, str.length-1], '{}'],
         SimpleDOI::MetadataParser::UnixrefXMLParser => [(0..4), '<!xml']
       }.map { |type,insp| return type.new(str) if str.chars.values_at(*insp.first).join == insp.last }
-      return nil
+      raise NoParserFoundError.new 'No available MetadatParser to handle input string'
     end
   end
+
+  class NoParserFoundError < StandardError; end;
 end
