@@ -1,5 +1,3 @@
-require_relative '../adapter'
-
 module DOIMeta2ES
   class Adapter
     class Journal < DOIMeta2ES::Adapter
