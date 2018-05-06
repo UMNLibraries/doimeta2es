@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/UMNLibraries/simpledoi-ruby.git
-  revision: f2f12cf8511daa278be3507cd5aa1b3e44d9cd90
+  revision: 251ddb90f2b36d4622837d8b52321ae88bcb9c98
   branch: master
   specs:
     simple_doi (1.2.1)

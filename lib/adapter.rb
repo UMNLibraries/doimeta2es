@@ -20,6 +20,15 @@ module DOIMeta2ES
       :eisbn,
     ].freeze
 
+    IDENTIFIER_METHODS = [
+      :journal_article?,
+      :journal?,
+      :book?,
+      :book_series?,
+      :book_chapter?,
+      :conference_proceeding?
+    ].freeze
+
     private_constant :Journal, :JournalArticle, :Book, :BookSeries, :BookChapter, :ConferenceProceeding
     attr_reader :adapter_class
 
@@ -29,14 +38,7 @@ module DOIMeta2ES
       # Map boolean type tests to a type subclass name & constantize
       # e.g. transforms :journal_article? to const class JournalArticle if true
       @metadata_parser = metadata_parser
-      [
-        :journal_article?,
-        :journal?,
-        :book?,
-        :book_series?,
-        :book_chapter?,
-        :conference_proceeding?
-      ].each { |meth| @adapter_class = self.class.const_get(meth.to_s.sub('?','').split('_').map { |w| w.capitalize }.join) if @metadata_parser.send(meth) }
+      IDENTIFIER_METHODS.each { |meth| @adapter_class = self.class.const_get(meth.to_s.sub('?','').split('_').map { |w| w.capitalize }.join) if @metadata_parser.send(meth) }
       @adapter_class ||= self.class
     end
 
