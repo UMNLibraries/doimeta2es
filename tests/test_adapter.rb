@@ -43,9 +43,23 @@ module DOIMeta2ES
       end
 
       def test_issns
+        parser = SimpleDOI::MetadataParser::MockParserWithoutMultiissnsMethod.new "some metadata"
+        adapter = Adapter.new parser
+        assert_equal [{:issn=>"1234-5678", :format=>"print"}, {:issn=>"9876-5432", :format=>"electronic"}], adapter.issns
+
+        parser = SimpleDOI::MetadataParser::MockParserWithMultiissnsMethod.new "some metadata"
+        adapter = Adapter.new parser
+        assert_equal [{:issn=>"1234-5678", :format=>"n/a"}, {:issn=>"9876-5432", :format=>"n/a"}], adapter.issns
       end
 
       def test_isbns
+        parser = SimpleDOI::MetadataParser::MockParserWithoutMultiissnsMethod.new "some metadata"
+        adapter = Adapter.new parser
+        assert_equal [{:isbn=>"9781111111111", :format=>"print"}, {:isbn=>"9789999999999", :format=>"electronic"}], adapter.isbns
+
+        parser = SimpleDOI::MetadataParser::MockParserWithMultiissnsMethod.new "some metadata"
+        adapter = Adapter.new parser
+        assert_equal [{:isbn=>"9781111111111", :format=>"n/a"}, {:isbn=>"9789999999999", :format=>"n/a"}], adapter.isbns
       end
     end
   end
