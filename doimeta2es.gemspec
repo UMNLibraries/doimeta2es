@@ -14,7 +14,8 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files`.split("\n")
   spec.test_files    = `git ls-files -- test/*`.split("\n")
-  spec.executables   = []
+  spec.bindir        = 'bin'
+  spec.executables   = %w(doimeta2es)
   spec.require_paths = %w(lib)
 
   spec.add_development_dependency 'minitest'
