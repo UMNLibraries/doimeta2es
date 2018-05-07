@@ -72,39 +72,33 @@ module DOIMeta2ES
     option :index, required: false, type: :string, desc: 'Index to setup, defaults to all'
     def setup
       es = es_client(options[:verbose])
-
-      if options[:index]
-        idxfile = File.expand_path("#{INDEX_DEFS}/index/#{options[:index]}.json")
-        mappingfile = File.expand_path("#{INDEX_DEFS}/mapping/#{options[:index]}.json")
-        if File.exists? idxfile
-          begin
-            es.indices.create index: options[:index], body: File.read(idxfile)
-          rescue Elasticsearch::Transport::Transport::Errors::BadRequest
-          end
-
-          if File.exists? mappingfile
-            es.indices.put_mapping index: options[:index], type: options[:index], body: File.read(mappingfile)
-          end
-        else
-          puts "No such index file #{idxfile}"
-        end
+      # Make an array of either a single index if requested options or all indexes defined in index-defs/index
+      indexes = if options[:index]
+        File.exists?("#{INDEX_DEFS}/index/#{options[:index]}.json") ? [options[:index]] : []
       else
-        Dir.glob("#{INDEX_DEFS}/index/*.json").each do |idxfile|
+        Dir.glob("#{INDEX_DEFS}/index/*.json").map{|i| File.basename(i, ".json")}
+      end
+      if indexes.empty?
+        puts "No compatible index definitions found in #{INDEX_DEFS}/index"
+        return
+      end
+
+      # Load each index and corresponding mapping
+      indexes.each do |idx|
+        begin
+          idxfile = File.expand_path("#{INDEX_DEFS}/index/#{idx}.json")
+          mappingfile = File.expand_path("#{INDEX_DEFS}/mapping/#{idx}.json")
+
           begin
-            idx = File.basename idxfile, '.json'
-            idxfile = File.expand_path(idxfile)
-            mappingfile = File.expand_path("#{INDEX_DEFS}/mapping/#{idx}.json")
-            begin
-              puts "Creating index #{idx} from #{idxfile}"
-              es.indices.create index: idx, body: File.read(idxfile)
-            rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
-              puts es_error_json e
-            end
-            puts "Creating mapping #{idx} from #{mappingfile}"
-            es.indices.put_mapping index: idx, type: idx, body: File.read(mappingfile)
-          rescue StandardError => e
+            puts "Creating index #{idx} from #{idxfile}"
+            es.indices.create index: idx, body: File.read(idxfile)
+          rescue Elasticsearch::Transport::Transport::Errors::BadRequest => e
             puts es_error_json e
           end
+          puts "Creating mapping #{idx} from #{mappingfile}"
+          es.indices.put_mapping index: idx, type: idx, body: File.read(mappingfile)
+        rescue StandardError => e
+          puts es_error_json e
         end
       end
     end
