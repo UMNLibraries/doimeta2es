@@ -1,14 +1,17 @@
 require 'curb'
 require 'elasticsearch'
 require 'cgi'
+require 'dotenv/load'
 
 module DOIMeta2ES
   class Transport
     def initialize(es=nil)
       raise ArgumentError.new('es must be an Elasticsearch::Client') if es && !es.kind_of?(Elasticsearch::Transport::Client)
 
-      # Connect to the supplied client or localhost
-      @es = es || (Elasticsearch::Client.new host: 'localhost:9200')
+      # Connect to the supplied client or ENV-specified or localhost
+      # As long as Dotenv has loaded, it is not actually necessary to read ENV & default to localhost:9200
+      # This is ES' default behavior and it would do the same thing anyway, but being explicit here to avoid confusion
+      @es = es || (Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'))
     end
 
     def index(str)
