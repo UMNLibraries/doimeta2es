@@ -19,6 +19,25 @@ module SimpleDOI
           @identifier == methname
         end
       end
+
+      PROPERTIES.each do |prop|
+        define_method prop do
+          prop.to_s.split('_').map{|word| word.capitalize}.join
+        end
+      end
+
+      def to_h
+        h = {}
+        # Nothing fancy needed for tests, just a hash of :property_name => "PropertyName"
+        PROPERTIES.each { |prop| h[prop] = prop.to_s.split('_').map{|word| word.capitalize}.join }
+        # And some generic contributors
+        h[:contributors] = [
+          SimpleDOI::MetadataParser::Parser::Contributor.new('X','Y','author',1),
+          SimpleDOI::MetadataParser::Parser::Contributor.new('A','B','author',2),
+          SimpleDOI::MetadataParser::Parser::Contributor.new('C','Ed','editor',1)
+        ].map!(&:to_h)
+        h
+      end
     end
 
     class MockParserWithoutMultiissnsMethod < MockParser
@@ -27,6 +46,7 @@ module SimpleDOI
       def issn; '1234-5678'; end
       def eissn; '9876-5432'; end
     end
+
     class MockParserWithMultiissnsMethod < MockParser
       def issns; ['1234-5678','9876-5432']; end
       def isbns; ['9781111111111','9789999999999']; end

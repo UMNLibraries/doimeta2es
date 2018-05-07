@@ -29,7 +29,7 @@ module DOIMeta2ES
 
       def test_target_index
         parser = SimpleDOI::MetadataParser::MockParser.new "some metadata"
-        
+
         [:book?, :book_chapter?, :book_series?].each do |method|
           parser.identifier = method
           adapter = Adapter.new parser
@@ -60,6 +60,35 @@ module DOIMeta2ES
         parser = SimpleDOI::MetadataParser::MockParserWithMultiissnsMethod.new "some metadata"
         adapter = Adapter.new parser
         assert_equal [{:isbn=>"9781111111111", :format=>"n/a"}, {:isbn=>"9789999999999", :format=>"n/a"}], adapter.isbns
+      end
+
+      def test_to_h
+        parser = SimpleDOI::MetadataParser::MockParser.new "some metadata"
+
+        # Verify some adapter subtypes
+        parser.identifier = :book_series?
+        h = Adapter.new(parser).to_h
+        assert_equal 'BookTitle', h[:full_title]
+        assert_equal 'BookSeriesTitle', h[:series_title]
+
+        parser.identifier = :journal_article?
+        h = Adapter.new(parser).to_h
+        assert_equal 'JournalTitle', h[:full_title]
+        assert_equal 'JournalIsoabbrevTitle', h[:abbrev_title]
+        assert_equal 'ArticleTitle', h[:article][:title]
+        assert_equal 'Y', h[:article][:authors][0][:name][:surname]
+        assert_equal 'A', h[:article][:authors][1][:name][:given]
+
+        # Cleaned up keys
+        assert_nil h[:contributors]
+        assert_nil h[:book_title]
+        assert_nil h[:journal_title]
+        assert_nil h[:article_title]
+
+        parser.identifier = :conference_proceeding?
+        h = Adapter.new(parser).to_h
+        assert_equal 'ConferenceTitle', h[:full_title]
+        assert_equal 'ArticleTitle', h[:article][:title]
       end
     end
   end
