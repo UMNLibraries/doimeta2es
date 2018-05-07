@@ -18,5 +18,12 @@ Gem::Specification.new do |spec|
   spec.executables   = %w(doimeta2es)
   spec.require_paths = %w(lib)
 
+  spec.add_runtime_dependency 'dotenv'
+  spec.add_runtime_dependency 'thor'
+  spec.add_runtime_dependency 'curb'
+  spec.add_runtime_dependency 'elasticsearch'
+  spec.add_runtime_dependency 'simple_doi'
+
   spec.add_development_dependency 'minitest'
+  spec.add_development_dependency 'webmock'
 end
