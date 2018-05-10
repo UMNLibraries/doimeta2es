@@ -85,7 +85,7 @@ module DOIMeta2ES
       # TODO: Put this into SimpleDOI itself as a static method instead of here
       {
         SimpleDOI::MetadataParser::CiteprocJSONParser => [[0, str.length-1], '{}'],
-        SimpleDOI::MetadataParser::UnixrefXMLParser => [(0..4), '<!xml']
+        SimpleDOI::MetadataParser::UnixrefXMLParser => [(0..4), '<?xml']
       }.map { |type,insp| return type.new(str) if str.chars.values_at(*insp.first).join == insp.last }
       raise NoParserFoundError.new 'No available MetadatParser to handle input string'
     end
