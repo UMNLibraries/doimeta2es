@@ -27,8 +27,8 @@ $ bundle exec bin/doimeta2es index --batchsize=1000 /path/to/metadata/files/*.xm
 # Index a single metadata record from STDIN
 $ cat /path/to/meta.xml | some-pipeline-processing | bundle exec bin/doimeta2es index --stdin
 
-# Lookup a single DOI and index it
-$ bundle exec bin/doimeta2es lookup --doi=10.9999/abcd-efgh.123.456 --index
+# Lookup a single DOI and index it, specify xml (or json)
+$ bundle exec bin/doimeta2es lookup --doi=10.9999/abcd-efgh.123.456 --index --format=xml
 ```
 
 ## Basic Configuration
