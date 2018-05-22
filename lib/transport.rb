@@ -2,23 +2,27 @@ require 'curb'
 require 'elasticsearch'
 require 'cgi'
 require 'dotenv/load'
+require 'simple_doi'
 
 module DOIMeta2ES
   class Transport
+
+    attr_reader :client
+
     def initialize(es=nil)
       raise ArgumentError.new('es must be an Elasticsearch::Client') if es && !es.kind_of?(Elasticsearch::Transport::Client)
 
       # Connect to the supplied client or ENV-specified or localhost
       # As long as Dotenv has loaded, it is not actually necessary to read ENV & default to localhost:9200
       # This is ES' default behavior and it would do the same thing anyway, but being explicit here to avoid confusion
-      @es = es || (Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'))
+      @client = es || (Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'))
     end
 
     def index(str)
       begin
         meta = self.class.parser_from_string str
         adapter = Adapter.new meta
-        result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
+        result = @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError => e
         puts e.inspect
       rescue StandardError => e
@@ -49,7 +53,7 @@ module DOIMeta2ES
               end
             end
             # Write the batch into the index
-            @es.bulk(body: bulk_body)
+            @client.bulk(body: bulk_body)
           rescue StandardError => e
             report[:errors] << "A batch error occurred: #{e.message}"
             next
@@ -63,10 +67,15 @@ module DOIMeta2ES
 
     # Return a MetadataParser class from file extension
     def self.parser_from_file(filename)
-      {
-        '.json' => SimpleDOI::MetadataParser::CiteprocJSONParser,
-        '.xml'  => SimpleDOI::MetadataParser::UnixrefXMLParser
-      }[File.extname(filename)].new(File.read(filename))
+      begin
+        {
+          '.json' => SimpleDOI::MetadataParser::CiteprocJSONParser,
+          '.xml'  => SimpleDOI::MetadataParser::UnixrefXMLParser
+        }[File.extname(filename)].new(File.read(filename))
+      # No match calls .new on nil, which we infer as an invalid parser
+      rescue NoMethodError
+        raise NoParserFoundError.new 'No available MetadataParser to handle supplied filename'
+      end
     end
 
     # Return a MetadataParser class by inspecting an input string's
