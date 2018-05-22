@@ -16,7 +16,7 @@ module DOIMeta2ES
 
     def index(str)
       begin
-        meta = str_parser str
+        meta = self.class.parser_from_string str
         adapter = Adapter.new meta
         result = @es.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError => e
@@ -34,7 +34,7 @@ module DOIMeta2ES
             bulk_body = []
             batch.each do |infile|
               begin
-                meta = file_parser(infile)
+                meta = self.class.parser_from_file(infile)
                 adapter = Adapter.new meta
                 idx = adapter.target_index
 
@@ -61,9 +61,8 @@ module DOIMeta2ES
       report
     end
 
-    protected
     # Return a MetadataParser class from file extension
-    def file_parser(filename)
+    def self.parser_from_file(filename)
       {
         '.json' => SimpleDOI::MetadataParser::CiteprocJSONParser,
         '.xml'  => SimpleDOI::MetadataParser::UnixrefXMLParser
@@ -72,7 +71,7 @@ module DOIMeta2ES
 
     # Return a MetadataParser class by inspecting an input string's
     # identifying characters
-    def str_parser(instr)
+    def self.parser_from_string(instr)
       str = instr.strip
       # {} is going to be a JSON attempt
       # <!xml is going ot be an XML attempt
