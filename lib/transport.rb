@@ -22,7 +22,7 @@ module DOIMeta2ES
       begin
         meta = self.class.parser_from_string str
         adapter = Adapter.new meta
-        result = @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
+        @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError => e
         puts e.inspect
       rescue StandardError => e
