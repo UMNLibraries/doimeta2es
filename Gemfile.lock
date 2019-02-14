@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/UMNLibraries/simpledoi-ruby.git
-  revision: 0c1009014ff5f766a9e7b8e6b2c389608b850a90
+  revision: 755b75ddca87a08d34c338c69446c80d06661e80
   specs:
-    simple_doi (1.2.2)
+    simple_doi (1.2.3)
       json
       nokogiri
 
@@ -27,12 +27,12 @@ GEM
       multipart-post (>= 1.2, < 3)
     hashdiff (0.3.7)
     json (2.1.0)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.3)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    nokogiri (1.8.2)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.1)
+      mini_portile2 (~> 2.4.0)
     public_suffix (3.0.2)
     rake (12.3.1)
     safe_yaml (1.0.4)
@@ -51,7 +51,7 @@ DEPENDENCIES
   elasticsearch
   minitest (~> 5.11)
   rake
-  simple_doi (>= 1.2.0)!
+  simple_doi (>= 1.2.3)!
   thor
   webmock (~> 3.3)
 
