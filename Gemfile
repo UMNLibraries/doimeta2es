@@ -4,7 +4,7 @@ gem 'rake'
 
 gem 'simple_doi', '>=1.2.3', git: 'https://github.com/UMNLibraries/simpledoi-ruby.git'
 gem 'elasticsearch'
-gem 'curb'
+gem 'curb', '~>0.9.10'
 gem 'dotenv'
 gem 'thor'
 
