@@ -39,3 +39,8 @@ file.
 Variable                     | Default                  | Notes
 -------------                | -------                  | -----
 `ELASTICSEARCH_URL`          | `http://localhost:9200/` | Full URL of the Elasticsearch service to connect to
+
+## Testing
+```
+$ bundle exec rake test
+```
