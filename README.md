@@ -6,7 +6,7 @@ $ bundle install
 ```
 
 ## Command line usage
-The executable `bin/doimeta2es` may be used to index metadata filesl (XML or
+The executable `bin/doimeta2es` may be used to index metadata files (XML or
 JSON) on disk or to lookup a DOI's metadata and optionally index it.
 
 ```shell
@@ -37,6 +37,9 @@ $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --index --forma
 # Lookup DOIs from a file (one per line), index them,
 # and save them to an alternate directory $HOME/saved-doi-meta
 $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --outputdir=$HOME/saved-doi-meta --index --format=xml
+
+# Lookup DOIs from a file (one per line), index them but do not save metadata
+$ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=json --nosave
 ```
 
 ## Basic Configuration
@@ -48,7 +51,8 @@ Variable                     | Default                  | Notes
 -------------                | -------                  | -----
 `ELASTICSEARCH_URL`          | `http://localhost:9200/` | Full URL of the Elasticsearch service to connect to
 
-## Testing
+## Development
 ```
+$ bundle install
 $ bundle exec rake test
 ```
