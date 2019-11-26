@@ -29,6 +29,14 @@ $ cat /path/to/meta.xml | some-pipeline-processing | bundle exec bin/doimeta2es 
 
 # Lookup a single DOI and index it, specify xml (or json)
 $ bundle exec bin/doimeta2es lookup --doi=10.9999/abcd-efgh.123.456 --index --format=xml
+
+# Lookup DOIs from a file (one per line), index them,
+# and save their metadata to the default location /tmp/doimeta
+$ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --index --format=xml
+
+# Lookup DOIs from a file (one per line), index them,
+# and save them to an alternate directory $HOME/saved-doi-meta
+$ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --outputdir=$HOME/saved-doi-meta --index --format=xml
 ```
 
 ## Basic Configuration
