@@ -3,6 +3,7 @@
 require 'thor'
 require 'dotenv/load'
 require 'json'
+require 'fileutils'
 require_relative File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib' , 'doimeta2es'))
 
 module DOIMeta2ES
@@ -41,26 +42,58 @@ module DOIMeta2ES
     If --index is specified, the output from Elasticsearch will be printed, otherwise the returned metadata is displayed
     LONGDESC
 
-    option :doi, required: true, type: :string, desc: 'Requested DOI'
+    option :doi, required: false, type: :string, desc: 'Requested DOI'
+    option :file, required: false, type: :string, desc: 'Read DOIs from file'
+    option :outputdir, required: false, type: :string, default: '/tmp/doimeta', desc: 'Output directory for batch metadata lookups by file'
     option :format, required: false, type: :string, default: 'json'
     option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch and print Elasticsearch JSON output'
     def lookup()
+      if options[:doi] && options[:file]
+        raise ArgumentError.new("Options --doi and --file are mutually exclusive")
+      end
+
       (formats = {
         'json' => SimpleDOI::CITEPROC_JSON,
         'xml' => SimpleDOI::UNIXREF_XML
       }).default = SimpleDOI::CITEPROC_JSON
       raise ArgumentError.new("--format must be one of #{formats.keys.join(', ')}") unless formats.keys.include?(options[:format])
 
-      doi = SimpleDOI::DOI.new(options[:doi].strip)
-      doi.lookup formats[options[:format]]
-      # Dump the returned string unless we will directly index it
-      puts doi.body unless (doi.body.strip.empty? || options[:index]) rescue nil
-
       if options[:index]
         es = es_client options[:verbose]
         client = DOIMeta2ES::Transport.new es
-        # Dump the output from Elasticsearch
-        puts client.index(doi.body).to_json
+      end
+
+      # Single DOI passed
+      if options[:doi]
+        doi = SimpleDOI::DOI.new(options[:doi].strip)
+        doi.lookup formats[options[:format]]
+        # Dump the returned string unless we will directly index it
+        puts doi.body unless (doi.body.strip.empty? || options[:index]) rescue nil
+
+        if options[:index]
+          client.index(doi.body)
+        end
+      # File of DOIs passed
+      elsif options[:file]
+        File.readlines(options[:file].strip).each do |line|
+          begin
+            doi = SimpleDOI::DOI.new(line.strip)
+          rescue ArgumentError
+            puts "Invalid DOI: #{line.strip}"
+            next
+          end
+          doi.lookup formats[options[:format]]
+          unless doi.body.strip.empty?
+            saved = save_meta(doi, options[:format], options[:outputdir], doi.body)
+            puts "Saved metadata file: #{saved}" if options[:verbose]
+
+            if options[:index]
+              output = client.index(doi.body)
+            end
+          end
+        end
+      else
+        raise ArgumentError.new("You must specify a single doi with --doi or input file with --file")
       end
     end
 
@@ -112,6 +145,18 @@ module DOIMeta2ES
 
     def es_error_json(e)
       JSON.parse(e.message.split(' ', 2).pop)
+    end
+
+    # Saves metadata to a CGI-escaped, DOI prefixed directory
+    # Returns the path to the new file
+    def save_meta(doi, extension, dir, metadata)
+      save_dir = "#{dir}/#{extension}/#{CGI.escape(doi.prefix)}"
+      FileUtils.mkdir_p save_dir
+      meta_file = "#{save_dir}/#{CGI.escape(doi.to_s)}.#{extension}"
+      File.open(meta_file, 'w') do  |file|
+        file.write metadata
+      end
+      meta_file
     end
   end
 end
