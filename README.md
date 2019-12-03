@@ -21,7 +21,7 @@ $ bundle exec bin/doimeta2es setup --index=article
 # even exceed shell expansion limits
 #
 # --batchsize default is 100
-# Add --verbose to see transactions with Elasticsearch
+# Add --verbosity=2 to see full transactions with Elasticsearch
 $ bundle exec bin/doimeta2es index --batchsize=1000 /path/to/metadata/files/*.xml
 
 # Index a single metadata record from STDIN

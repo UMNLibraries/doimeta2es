@@ -10,7 +10,7 @@ module DOIMeta2ES
   class CLI < Thor
     INDEX_DEFS = File.dirname(__FILE__) + '/../index-defs'
 
-    class_option :verbose, type: :boolean, default: false, desc: 'Show verbose output from Elasticsearch'
+    class_option :verbosity, type: :numeric, default: 0, desc: 'Show verbose output 0=none, 1=limited, 2=full Elasticsearch output'
 
     desc "Index metadata", "Index metadata from files on disk or from stdin"
     long_desc <<-LONGDESC
@@ -23,14 +23,14 @@ module DOIMeta2ES
     option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
 
     def index(*files)
-      es = es_client options[:verbose]
+      es = es_client options[:verbosity] > 1
       client = DOIMeta2ES::Transport.new es
 
       if options[:stdin]
         result = client.index $stdin.read
       else
         report = client.index_batch files, options[:batchsize].to_i
-        puts report.inspect
+        $stdout.puts report.inspect if options[:verbosity] > 0
       end
 
     end
@@ -60,7 +60,7 @@ module DOIMeta2ES
       raise ArgumentError.new("--format must be one of #{formats.keys.join(', ')}") unless formats.keys.include?(options[:format])
 
       if options[:index]
-        es = es_client options[:verbose]
+        es = es_client (options[:verbosity] > 1)
         client = DOIMeta2ES::Transport.new es
       end
 
@@ -69,7 +69,7 @@ module DOIMeta2ES
         doi = SimpleDOI::DOI.new(options[:doi].strip)
         doi.lookup formats[options[:format]]
         # Dump the returned string unless we will directly index it
-        puts doi.body unless (doi.body.strip.empty? || options[:index]) rescue nil
+        $stdout.puts doi.body unless (doi.body.to_s.strip.empty? || options[:index]) rescue nil
 
         if options[:index]
           client.index(doi.body)
@@ -80,20 +80,39 @@ module DOIMeta2ES
           begin
             doi = SimpleDOI::DOI.new(line.strip)
           rescue ArgumentError
-            puts "Invalid DOI: #{line.strip}"
+            $stderr.puts "Invalid DOI: #{line.strip}"
             next
           end
-          doi.lookup formats[options[:format]]
-          unless doi.body.strip.empty?
+
+          begin
+            doi.lookup formats[options[:format]]
+            if doi.body.to_s.strip.empty?
+              $stderr.puts "Failed batch lookup: #{doi.to_s}"
+              next
+            end
+            $stdout.puts "Successful batch lookup: #{doi.to_s}"
             unless options[:nosave]
               saved = save_meta(doi, options[:format], options[:outputdir], doi.body)
-              puts "Saved metadata file: #{saved}" if options[:verbose]
+              $stdout.puts "Saved metadata file: #{saved}" if options[:verbosity] > 0
             end
 
             if options[:index]
-              output = client.index(doi.body)
+              client.index(doi.body)
             end
+          rescue Curl::Err::CurlError => e
+            # A network lookup error of some kind from Curl
+            $stderr.puts "Failed batch lookup: #{doi.to_s}"
+            $stderr.puts "Network error occurred: #{e.message}"
+            $stderr.puts e.backtrace.join("\n") if options[:verbosity] > 0
+            next
+          rescue StandardError => e
+            $stderr.puts "Failed batch lookup: #{doi.to_s}"
+            $stderr.puts e.message
+            $stderr.puts e.backtrace.join("\n") if options[:verbosity] > 0
+            next
           end
+          $stderr.flush
+          $stdout.flush
         end
       else
         raise ArgumentError.new("You must specify a single doi with --doi or input file with --file")
@@ -107,7 +126,7 @@ module DOIMeta2ES
 
     option :index, required: false, type: :string, desc: 'Index to setup, defaults to all'
     def setup
-      es = es_client(options[:verbose])
+      es = es_client (options[:verbosity] > 1)
       # Make an array of either a single index if requested options or all indexes defined in index-defs/index
       indexes = if options[:index]
         File.exists?("#{INDEX_DEFS}/index/#{options[:index]}.json") ? [options[:index]] : []
