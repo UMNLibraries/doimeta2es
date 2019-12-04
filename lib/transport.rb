@@ -24,8 +24,10 @@ module DOIMeta2ES
         adapter = Adapter.new meta
         @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError => e
-        puts e.inspect
+        # Maybe do something different later
+        raise
       rescue StandardError => e
+        raise
       end
     end
 
