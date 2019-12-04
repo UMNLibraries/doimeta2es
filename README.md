@@ -20,9 +20,16 @@ $ bundle exec bin/doimeta2es setup --index=article
 # Note: this gets slow with tens of thousands of files, and may
 # even exceed shell expansion limits
 #
+# Pass filenames to index as arguments, or a glob pattern
 # --batchsize default is 100
 # Add --verbosity=2 to see full transactions with Elasticsearch
 $ bundle exec bin/doimeta2es index --batchsize=1000 /path/to/metadata/files/*.xml
+
+# Read all files recursively in --readdir for valid metadata file types
+# and index them in batch. The best option if you have a large number of files,
+# will not run afoul of command line argument length or filename expansion limits
+# Note: additional filename arguments will be ignored
+$ bundle exec bin/doimeta2es index --readdir=/path/to/all/metafiles
 
 # Index a single metadata record from STDIN
 $ cat /path/to/meta.xml | some-pipeline-processing | bundle exec bin/doimeta2es index --stdin
