@@ -21,6 +21,7 @@ module DOIMeta2ES
 
     option :batchsize, required: false, type: :numeric, default: 100, desc: 'Batch size for Elasticsearch bulk operations'
     option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
+    option :readdir, required: false, type: :string, desc: 'Recursively search directory for metadata files to index'
 
     def index(*files)
       es = es_client options[:verbosity] > 1
@@ -28,6 +29,15 @@ module DOIMeta2ES
 
       if options[:stdin]
         client.index $stdin.read
+      elsif options[:readdir]
+        if !files.empty?
+          $stderr.puts 'Directory was provided with --readdir, ignoring additional file arguments'
+        end
+        readdir = File.expand_path options[:readdir]
+        # Glob for all files matching valid format extensions
+        dirfiles = Dir.glob("#{readdir}/**/*.{#{formats.keys.join(',')}}")
+        report = client.index_batch dirfiles, options[:batchsize].to_i
+        $stdout.puts report.to_json if options[:verbosity] > 0
       else
         report = client.index_batch files, options[:batchsize].to_i
         $stdout.puts report.to_json if options[:verbosity] > 0
@@ -52,10 +62,6 @@ module DOIMeta2ES
         raise ArgumentError.new("Options --doi and --file are mutually exclusive")
       end
 
-      (formats = {
-        'json' => SimpleDOI::CITEPROC_JSON,
-        'xml' => SimpleDOI::UNIXREF_XML
-      }).default = SimpleDOI::CITEPROC_JSON
       raise ArgumentError.new("--format must be one of #{formats.keys.join(', ')}") unless formats.keys.include?(options[:format])
 
       if options[:index]
@@ -166,6 +172,15 @@ module DOIMeta2ES
 
     def es_error_json(e)
       JSON.parse(e.message.split(' ', 2).pop)
+    end
+
+    def formats
+      formats = {
+        'json' => SimpleDOI::CITEPROC_JSON,
+        'xml' => SimpleDOI::UNIXREF_XML
+      }
+      formats.default = SimpleDOI::CITEPROC_JSON
+      formats
     end
 
     # Saves metadata to a CGI-escaped, DOI prefixed directory
