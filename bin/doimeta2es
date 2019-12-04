@@ -27,12 +27,11 @@ module DOIMeta2ES
       client = DOIMeta2ES::Transport.new es
 
       if options[:stdin]
-        result = client.index $stdin.read
+        client.index $stdin.read
       else
         report = client.index_batch files, options[:batchsize].to_i
-        $stdout.puts report.inspect if options[:verbosity] > 0
+        $stdout.puts report.to_json if options[:verbosity] > 0
       end
-
     end
 
     desc "Lookup a DOI", "Lookup metadata for a DOI identifier"
