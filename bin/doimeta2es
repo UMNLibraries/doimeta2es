@@ -2,8 +2,6 @@
 
 require 'thor'
 require 'dotenv/load'
-require 'json'
-require 'fileutils'
 require_relative File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib' , 'doimeta2es'))
 
 module DOIMeta2ES

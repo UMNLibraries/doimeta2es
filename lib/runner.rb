@@ -1,3 +1,6 @@
+require 'json'
+require 'fileutils'
+
 module DOIMeta2ES
   class Runner
     def initialize(es_client, outstream, errstream)
@@ -162,9 +165,7 @@ module DOIMeta2ES
       save_dir = "#{dir}/#{extension}/#{CGI.escape(doi.prefix)}"
       FileUtils.mkdir_p save_dir
       meta_file = "#{save_dir}/#{CGI.escape(doi.to_s)}.#{extension}"
-      File.open(meta_file, 'w') do  |file|
-        file.write metadata
-      end
+      File.open(meta_file, 'w') { |file| file.write metadata }
       meta_file
     end
   end
