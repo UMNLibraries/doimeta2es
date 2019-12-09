@@ -19,7 +19,6 @@ module DOIMeta2ES
     option :batchsize, required: false, type: :numeric, default: 100, desc: 'Batch size for Elasticsearch bulk operations'
     option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
     option :readdir, required: false, type: :string, desc: 'Recursively search directory for metadata files to index'
-
     def index(*files)
       DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1), $stdout, $stderr).index(options, *files)
     end
@@ -33,8 +32,8 @@ module DOIMeta2ES
 
     option :doi, required: false, type: :string, desc: 'Requested DOI'
     option :file, required: false, type: :string, desc: 'Read DOIs from file'
-    option :outputdir, required: false, type: :string, default: '/tmp/doimeta', desc: 'Output directory for batch metadata lookups by file'
-    option :nosave, required: false, type: :boolean, default: false, desc: 'Do NOT save metadata to files, useless without --index'
+    option :save, required: false, type: :boolean, default: true, desc: 'Save metadata to files when doing batch --file, --no-save is useless without --index'
+    option :outputdir, required: false, type: :string, default: '/tmp/doimeta', desc: 'Output directory for batch metadata lookups with --file'
     option :format, required: false, type: :string, default: 'json'
     option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch and print Elasticsearch JSON output'
     def lookup()

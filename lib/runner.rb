@@ -82,7 +82,7 @@ module DOIMeta2ES
               next
             end
             @outstream.puts "Successful batch lookup: #{doi.to_s}"
-            unless options[:nosave]
+            if options[:save]
               saved = save_meta(doi, options[:format], options[:outputdir], doi.body)
               @outstream.puts "Saved metadata file: #{saved}" if options[:verbosity] > 0
             end

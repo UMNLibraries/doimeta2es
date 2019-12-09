@@ -46,7 +46,7 @@ $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --index --forma
 $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --outputdir=$HOME/saved-doi-meta --index --format=xml
 
 # Lookup DOIs from a file (one per line), index them but do not save metadata
-$ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=json --nosave
+$ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=json --index --no-save
 
 # Lookup DOIs from a file in batch, redirect successful and error output to files
 $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=xml 1> successful-doi.log 2> fail-doi.log
