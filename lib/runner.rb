@@ -26,9 +26,9 @@ module DOIMeta2ES
         readdir = File.expand_path options[:readdir]
         # Glob for all files matching valid format extensions
         dirfiles = Dir.glob("#{readdir}/**/*.{#{formats.keys.join(',')}}")
-        report = transport.index_batch dirfiles, options[:batchsize].to_i
+        report = transport.index_batch dirfiles, (options[:batchsize] || 100)
       else
-        report = transport.index_batch files, options[:batchsize].to_i
+        report = transport.index_batch files, (options[:batchsize] || 100)
       end
       @outstream.puts report.to_json if options[:verbosity] > 0
       nil
