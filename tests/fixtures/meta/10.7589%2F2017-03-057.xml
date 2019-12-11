@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_records>
+  <doi_record owner="10.7589" timestamp="2018-01-15 15:56:08">
+    <crossref>
+      <journal>
+        <journal_metadata language="en">
+          <full_title>Journal of Wildlife Diseases</full_title>
+          <abbrev_title>Journal of Wildlife Diseases</abbrev_title>
+          <issn media_type="print">0090-3558</issn>
+        </journal_metadata>
+        <journal_issue>
+          <publication_date media_type="print">
+            <month>01</month>
+            <year>2018</year>
+          </publication_date>
+          <journal_volume>
+            <volume>54</volume>
+          </journal_volume>
+          <issue>1</issue>
+        </journal_issue>
+        <journal_article publication_type="full_text">
+          <titles>
+            <title>
+              GASTROINTESTINAL PARASITIC INFECTIONS IN DEAD OR DEBILITATED MOOSE (
+              <i>ALCES ALCES</i>
+              ) IN SWEDEN
+            </title>
+          </titles>
+          <contributors>
+            <person_name sequence="first" contributor_role="author">
+              <given_name>Giulio</given_name>
+              <surname>Grandi</surname>
+              <affiliation>National Veterinary Institute, Department of Microbiology, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Henrik</given_name>
+              <surname>Uhlhorn</surname>
+              <affiliation>National Veterinary Institute, Department of Pathology and Wildlife Diseases, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Erik</given_name>
+              <surname>Ågren</surname>
+              <affiliation>National Veterinary Institute, Department of Disease Control and Epidemiology, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Torsten</given_name>
+              <surname>Mörner</surname>
+              <affiliation>National Veterinary Institute, Department of Disease Control and Epidemiology, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Federico</given_name>
+              <surname>Righi</surname>
+              <affiliation>University of Parma, Department of Veterinary Science, via del Taglio 10, 43126, Parma, Italy</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Eva</given_name>
+              <surname>Osterman-Lind</surname>
+              <affiliation>National Veterinary Institute, Department of Microbiology, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+            <person_name sequence="additional" contributor_role="author">
+              <given_name>Aleksija</given_name>
+              <surname>Neimanis</surname>
+              <affiliation>National Veterinary Institute, Department of Pathology and Wildlife Diseases, Ulls väg 2B, 75189, Uppsala, Sweden</affiliation>
+            </person_name>
+          </contributors>
+          <publication_date media_type="print">
+            <month>01</month>
+            <year>2018</year>
+          </publication_date>
+          <pages>
+            <first_page>165</first_page>
+            <last_page>169</last_page>
+          </pages>
+          <publisher_item>
+            <identifier id_type="doi">10.7589/2017-03-057</identifier>
+          </publisher_item>
+          <program name="AccessIndicators">
+            <license_ref applies_to="tdm">http://www.bioone.org/page/resources/researchers/rights_and_permissions</license_ref>
+          </program>
+          <doi_data>
+            <doi>10.7589/2017-03-057</doi>
+            <resource>http://www.bioone.org/doi/10.7589/2017-03-057</resource>
+            <collection property="crawler-based">
+              <item crawler="iParadigms">
+                <resource>http://www.jwildlifedis.org/doi/pdf/10.7589/2017-03-057</resource>
+              </item>
+            </collection>
+            <collection property="text-mining">
+              <item>
+                <resource mime_type="application/xml">http://www.bioone.org/doi/full-xml/10.7589/2017-03-057</resource>
+              </item>
+            </collection>
+          </doi_data>
+        </journal_article>
+      </journal>
+    </crossref>
+  </doi_record>
+</doi_records>

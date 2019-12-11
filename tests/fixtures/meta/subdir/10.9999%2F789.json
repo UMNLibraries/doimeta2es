@@ -1,0 +1,79 @@
+{
+  "indexed": {
+    "date-parts": [
+      [
+        2019,
+        2,
+        18
+      ]
+    ],
+    "date-time": "2019-02-18T16:03:30Z",
+    "timestamp": 1550505810481
+  },
+  "DOI": "10.9999/789",
+  "type": "article-journal",
+  "created": {
+    "date-parts": [
+      [
+        2017,
+        10,
+        23
+      ]
+    ],
+    "date-time": "2017-10-23T15:34:01Z",
+    "timestamp": 1508772841000
+  },
+  "page": "165-169",
+  "source": "Crossref",
+  "is-referenced-by-count": 2,
+  "title": "A TITLE",
+  "prefix": "10.9999",
+  "volume": "54",
+  "member": "4415",
+  "container-title": "Journal of Testing Stuff",
+  "original-title": [],
+  "language": "en",
+  "deposited": {
+    "date-parts": [
+      [
+        2018,
+        1,
+        15
+      ]
+    ],
+    "date-time": "2018-01-15T20:56:08Z",
+    "timestamp": 1516049768000
+  },
+  "score": 1,
+  "subtitle": [],
+  "short-title": [],
+  "issued": {
+    "date-parts": [
+      [
+        2018,
+        1
+      ]
+    ]
+  },
+  "references-count": 8,
+  "journal-issue": {
+    "published-print": {
+      "date-parts": [
+        [
+          2018,
+          1
+        ]
+      ]
+    },
+    "issue": "1"
+  },
+  "alternative-id": [
+    "10.9999/789"
+  ],
+  "URL": "http://dx.doi.org/10.9999/789",
+  "relation": {},
+  "ISSN": [
+    "0090-3558"
+  ],
+  "container-title-short": "Journal of Testing Stuff"
+}
