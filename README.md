@@ -62,6 +62,7 @@ Variable                     | Default                  | Notes
 `ELASTICSEARCH_URL`          | `http://localhost:9200/` | Full URL of the Elasticsearch service to connect to
 
 ## Development
+Copy `.env.example` to `.env` and modify your Elasticsearch URL if needed
 ```
 $ bundle install
 $ bundle exec rake test
