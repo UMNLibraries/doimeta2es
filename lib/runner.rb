@@ -2,6 +2,13 @@ require 'json'
 require 'fileutils'
 
 module DOIMeta2ES
+  # Class to invoke primary Transport operations
+  # This class' purpose is as a middle-ground between bin/doimeta2es Thor CLI file
+  # and testable actions
+  #
+  # All public Runner methods map to CLI commands defined in bin/doimeta2es and
+  # accept an options Hash. For information on available options, see Thor option/CLI flag
+  # definitions in bin/doimeta2es
   class Runner
     attr_writer :es_client, :outstream, :errstream, :instream
     def initialize(es_client)
@@ -14,9 +21,9 @@ module DOIMeta2ES
     end
 
     # Indexes single or batch metadata files
-    # by reading a directory of xml,json recursively with --readdir=
-    # by individual files passed as argments
-    # or via stdin with --stdin
+    # When the stdin option is truthy, read one metadata file from @instream
+    # When the readdir option is present, recursively read all xml,json files from the specified dir
+    # When individual files are specified on the command line, index them
     def index(options={}, *files) 
       transport = DOIMeta2ES::Transport.new @es_client
 
@@ -38,6 +45,11 @@ module DOIMeta2ES
       nil
     end
 
+    # Lookup one or more DOIs and index them if requested
+    # When the doi option is present, lookup ONE DOI
+    # When the file option is present, lookup each DOI listed in file
+    # When the index option is truthy, send looked up metadata to the Elasticsearch index
+    # When the save option is truthy, save metadata files to outputdir
     def lookup(options={})
       if options[:doi] && options[:file]
         raise ArgumentError.new("Options --doi and --file are mutually exclusive")
