@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'webmock'
 require 'webmock/minitest'
 require 'fileutils'
-require_relative '../lib/doimeta2es'
+require_relative '../lib/runner'
 
 module DOIMeta2ES
   module Test
@@ -136,8 +136,28 @@ module DOIMeta2ES
 
       def test_index_readdir
         options = {
-          readdir: fixture_meta_path
+          readdir: fixture_meta_path,
+          verbosity: 1,
         }
+
+        out, = capture_io do
+          runner.index(options)
+        end
+
+        assert_equal ({errors: [], article: 5}).to_json, out.strip, 'verbosity=1 should show 5 items indexed'
+      end
+
+      def test_index_stdin
+        options = {
+          stdin: true,
+          verbosity: 1
+        }
+
+        capture_io do
+          runner.index(options)
+        end
+
+        assert_requested @stubs[:put_107589]
       end
 
       def test_lookup_with_index_xml
@@ -231,6 +251,14 @@ module DOIMeta2ES
         assert_match %r{Successful batch lookup: 10.9999/123}, out, 'verbosity>=0 should output batch lookup DOI'
         assert_match %r{Successful batch lookup: 10.9999/456}, out, 'verbosity>=0 should output batch lookup DOI'
         assert_match %r{Failed batch lookup: 10.9999/999}, err, 'verbosity>=0 should output batch lookup DOI failure'
+      end
+
+      # Override a stdin read method
+      class MockStdinJSON < StringIO
+        def read
+          # Return the file contents of one of our fixture DOI metas
+          File.read "#{RunnerTest.fixture_meta_path}/10.7589%2F2017-03-057.json"
+        end
       end
     end
   end

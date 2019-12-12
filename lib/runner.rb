@@ -3,10 +3,14 @@ require 'fileutils'
 
 module DOIMeta2ES
   class Runner
-    def initialize(es_client, outstream, errstream)
+    attr_writer :es_client, :outstream, :errstream, :instream
+    def initialize(es_client)
       @es_client = es_client
-      @outstream = outstream
-      @errstream = errstream
+
+      # Default to stdio streams, can be overwritten with writer methods
+      @outstream = $stdout
+      @errstream = $stderr
+      @instream = $stdin
     end
 
     # Indexes single or batch metadata files
@@ -21,7 +25,7 @@ module DOIMeta2ES
       end
 
       if options[:stdin]
-        report = transport.index $stdin.read
+        report = transport.index @instream.read
       elsif options[:readdir]
         readdir = File.expand_path options[:readdir]
         # Glob for all files matching valid format extensions

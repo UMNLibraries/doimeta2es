@@ -20,7 +20,7 @@ module DOIMeta2ES
     option :stdin, required: false, type: :boolean, default: false, desc: 'Read from STDIN'
     option :readdir, required: false, type: :string, desc: 'Recursively search directory for metadata files to index'
     def index(*files)
-      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1), $stdout, $stderr).index(options, *files)
+      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1)).index(options, *files)
     end
 
     desc "Lookup a DOI", "Lookup metadata for a DOI identifier"
@@ -37,7 +37,7 @@ module DOIMeta2ES
     option :format, required: false, type: :string, default: 'json'
     option :index, type: :boolean, default: false, desc: 'Index metadata in Elasticsearch and print Elasticsearch JSON output'
     def lookup()
-      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1), $stdout, $stderr).lookup(options)
+      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1)).lookup(options)
     end
 
     desc "Setup indices and mappings", "Create or update indices and mappings in Elasticsearch"
@@ -48,7 +48,7 @@ module DOIMeta2ES
     option :index, required: false, type: :string, desc: 'Index to setup, defaults to all'
     def setup
       index_defs_path = File.dirname(__FILE__) + '/../index-defs'
-      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1), $stdout, $stderr).setup(index_defs_path, options)
+      DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1)).setup(index_defs_path, options)
     end
 
     default_command :index
