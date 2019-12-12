@@ -10,6 +10,7 @@ module DOIMeta2ES
       WebMock.disable_net_connect!
 
       def setup
+        @tempdir = nil;
         @stubs = {
           # TODO Delete all files from /tmp
 
@@ -73,11 +74,19 @@ module DOIMeta2ES
       end
 
       def fixture_path
-        "#{File.dirname(__FILE__)}/fixtures"
+        self.class.fixture_path
       end
 
       def fixture_meta_path
+        self.class.fixture_meta_path
+      end
+
+      def self.fixture_meta_path
         "#{fixture_path}/meta"
+      end
+
+      def self.fixture_path
+        "#{File.dirname(__FILE__)}/fixtures"
       end
 
       def output_tmp_path
@@ -89,14 +98,21 @@ module DOIMeta2ES
       end
 
       def runner
-        DOIMeta2ES::Runner.new(es_client, $stdout, $stderr)
+        runner = DOIMeta2ES::Runner.new(es_client)
+        # For a test Runner obj, we will use capture_io and can deal
+        # easily directly with stdout/stderr
+        runner.outstream = $stdout
+        runner.errstream = $stderr
+        # But stdin isn't handled by capture_io, so create a fake one
+        runner.instream = MockStdinJSON.new
+        runner
       end
 
       def test_index_single_file_quiet
         options = {
           verbosity: 0
         }
-        out, err = capture_io do
+        out, = capture_io do
           runner.index(options, "#{fixture_meta_path}/10.7589%2F2017-03-057.xml")
         end
 
@@ -108,7 +124,7 @@ module DOIMeta2ES
         options = {
           verbosity: 1
         }
-        out, err = capture_io do
+        out, = capture_io do
           runner.index(options, "#{fixture_meta_path}/10.7589%2F2017-03-057.xml")
         end
 
@@ -120,7 +136,7 @@ module DOIMeta2ES
           batchsize: 2,
           verbosity: 1
         }
-        out, err = capture_io do
+        out, = capture_io do
           file_args = [
             "#{fixture_meta_path}/10.7589%2F2017-03-057.xml",
             "#{fixture_meta_path}/10.9999%2F123.xml",
@@ -167,7 +183,7 @@ module DOIMeta2ES
           format: 'xml',
           verbosity: 0
         }
-        out, err = capture_io do
+        out, = capture_io do
           runner.lookup(options)
         end
 
@@ -186,7 +202,7 @@ module DOIMeta2ES
           index: false,
           verbosity: 0
         }
-        out, err = capture_io do
+        out, = capture_io do
           runner.lookup(options)
         end
         # Output should include full JSON
