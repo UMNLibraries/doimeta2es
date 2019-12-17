@@ -1,9 +1,13 @@
 require 'minitest/autorun'
+require 'webmock'
+require 'webmock/minitest'
 require_relative '../lib/transport'
 
 module DOIMeta2ES
   module Test
     class TransportTest < Minitest::Test
+      WebMock.disable_net_connect!
+
       def setup
       end
 
@@ -37,6 +41,24 @@ module DOIMeta2ES
         assert_raises ArgumentError do
           Transport.new "Not an Elasticsearch client"
         end
+      end
+
+      def test_index_args
+        # Attempt to index non-String, non-SimpleDOI::DOI
+        assert_raises ArgumentError do
+          Transport.new.index(Class.new)
+        end
+
+        assert_raises NoParserFoundError do
+          Transport.new.index("string")
+        end
+
+
+        es_put_request = stub_request(:put, %r{elasticmock\.local:9299/book/book/10.1007/978-0-387-72804-9_32})
+        Transport.new(Elasticsearch::Client.new(url: 'http://elasticmock.local:9299'))
+          .index(SimpleDOI::MetadataParser::CiteprocJSONParser.new(File.read("#{fixture_path}/citeproc-book-2.json")))
+
+        assert_requested es_put_request
       end
     end
   end

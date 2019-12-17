@@ -18,9 +18,21 @@ module DOIMeta2ES
       @client = es || (Elasticsearch::Client.new url: (ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200'))
     end
 
-    def index(str)
+    # Index a single DOI metadata item
+    # Returns: nil
+    # Params:
+    # * +item+ +String|SimpleDOI::MetadataParser::Parser+ DOI metadata as a raw string or a prepared SimpleDOI::MetadataParser::Parser object
+    def index(item)
       begin
-        meta = self.class.parser_from_string str
+        if item.kind_of? String
+          meta = self.class.parser_from_string item
+        elsif item.kind_of? SimpleDOI::MetadataParser::Parser
+          meta = item
+        else
+          raise ArgumentError.new "Argument must be a String or SimpleDOI::MetadataParser::Parser. #{item.class} given."
+        end
+
+        # meta should now be a MetadataParser, either by string detection or direct arg
         adapter = Adapter.new meta
         @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError
@@ -97,7 +109,7 @@ module DOIMeta2ES
         SimpleDOI::MetadataParser::CiteprocJSONParser => [[0, str.length-1], '{}'],
         SimpleDOI::MetadataParser::UnixrefXMLParser => [(0..4), '<?xml']
       }.map { |type,insp| return type.new(str) if str.chars.values_at(*insp.first).join == insp.last }
-      raise NoParserFoundError.new 'No available MetadatParser to handle input string'
+      raise NoParserFoundError.new 'No available MetadataParser to handle input string'
     end
   end
 
