@@ -52,6 +52,37 @@ $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=json -
 $ bundle exec bin/doimeta2es lookup --file=/path/to/doi-list.txt --format=xml 1> successful-doi.log 2> fail-doi.log
 ```
 
+## Library Usage
+Useful functionality is exposed in `DOIMeta2ES::Transport` but to a large degree
+merely wraps features present in `Elasticsearch`. Used in conjunction with
+[`SimpleDOI`](https://github.com/UMNLibraries/simpledoi-ruby), a
+`SimpleDOI::MetadataParser::Parser` can be directly indexed into Elasticsearch,
+or a `String` containing metadata can be indexed.
+
+```ruby
+# Index a file from disk
+meta_string = File.read('/path/to/doimeta.xml')
+
+# Allow DOIMeta2ES to determine the metadata type and index it
+doimeta = DOIMeta2ES::Transport.new
+doimeta.index(meta_string)
+
+# Pass in an Elasticsearch connection rather than use the default
+es_client = Elasticsearch::Client.new 'http://elastic-host.example.com:9200'
+doimeta = DOIMeta2ES::Transport.new(es_client)
+doimeta.index(meta_string)
+
+# Index an existing SimpleDOI::MetadataParser::Parser object
+doi = SimpleDOI::DOI.new '10.9999/abcd.efg'
+doi.lookup(SimpleDOI::UNIXREF_XML)
+
+# Create a parser
+parser = SimpleDOI::MetadataParser::UnixrefXMLParser.new(doi.body)
+
+# Index it
+doimeta.index(parser)
+```
+
 ## Basic Configuration
 Environment variables for configuration may be handled by Dotenv in a `.env`
 file.
