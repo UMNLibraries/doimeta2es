@@ -44,6 +44,7 @@
       }
     },
     "url": {"type": "text"},
+    "fulltext_url": {"type": "text"},
     "meta_date": {"type": "date"}
   }
 }

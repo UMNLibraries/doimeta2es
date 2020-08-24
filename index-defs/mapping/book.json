@@ -47,6 +47,7 @@
     "publication_date": {"type": "date"},
     "publisher": {"type": "text"},
     "url": {"type": "text"},
+    "fulltext_url": {"type": "text"},
     "meta_date": {"type": "date"}
   }
 }
