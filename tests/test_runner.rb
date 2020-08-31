@@ -48,9 +48,9 @@ module DOIMeta2ES
               body: '',
               status: 404
             ),
-          put_107589: stub_request(:put, %r{elasticmock\.local:9299/article/article/10.7589%2F2017-03-057}),
-          put_109999123: stub_request(:put, %r{elasticmock\.local:9299/article/article/10.9999%2F123}),
-          put_109999456: stub_request(:put, %r{elasticmock\.local:9299/article/article/10.9999%2F456}),
+          put_107589: stub_request(:put, %r{elasticmock\.local:9299/article/_doc/10.7589%2F2017-03-057}),
+          put_109999123: stub_request(:put, %r{elasticmock\.local:9299/article/_doc/10.9999%2F123}),
+          put_109999456: stub_request(:put, %r{elasticmock\.local:9299/article/_doc/10.9999%2F456}),
           post_bulk_single: stub_request(:post, %r{elasticmock\.local:9299/_bulk})
             .to_return(
               body: ({errors: [], article: 1}).to_json,

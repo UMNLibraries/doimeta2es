@@ -54,7 +54,7 @@ module DOIMeta2ES
         end
 
 
-        es_put_request = stub_request(:put, %r{elasticmock\.local:9299/book/book/10.1007/978-0-387-72804-9_32})
+        es_put_request = stub_request(:put, %r{elasticmock\.local:9299/book/_doc/10.1007/978-0-387-72804-9_32})
         Transport.new(Elasticsearch::Client.new(url: 'http://elasticmock.local:9299'))
           .index(SimpleDOI::MetadataParser::CiteprocJSONParser.new(File.read("#{fixture_path}/citeproc-book-2.json")))
 
