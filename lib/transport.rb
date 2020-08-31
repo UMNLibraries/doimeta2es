@@ -34,7 +34,7 @@ module DOIMeta2ES
 
         # meta should now be a MetadataParser, either by string detection or direct arg
         adapter = Adapter.new meta
-        @client.index index: adapter.target_index, type: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
+        @client.index index: adapter.target_index, id: meta.doi.upcase, body: adapter.to_json
       rescue NoParserFoundError
         # Maybe do something different later
         raise
@@ -57,7 +57,7 @@ module DOIMeta2ES
                 idx = adapter.target_index
 
                 # Add a hash from this parsed document to the bulk action's array
-                bulk_body << {index: {_index: idx, _type: idx, _id: meta.doi.upcase, data: adapter.to_h }}
+                bulk_body << {index: {_index: idx, _id: meta.doi.upcase, data: adapter.to_h }}
                 report[idx.to_sym] += 1
               rescue Errno::ENOENT
                 report[:errors] << "File #{infile} is unreadable or does not exist"

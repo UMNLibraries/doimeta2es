@@ -153,7 +153,7 @@ module DOIMeta2ES
             @errstream.puts es_error_json e
           end
           @outstream.puts "Creating mapping #{idx} from #{mappingfile}"
-          @es_client.indices.put_mapping index: idx, type: idx, body: File.read(mappingfile), include_type_name: true
+          @es_client.indices.put_mapping index: idx, body: File.read(mappingfile)
         rescue StandardError => e
           @errstream.puts es_error_json e
         end
