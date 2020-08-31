@@ -15,21 +15,21 @@ GEM
       safe_yaml (~> 1.0.0)
     curb (0.9.10)
     dotenv (2.7.5)
-    elasticsearch (7.4.0)
-      elasticsearch-api (= 7.4.0)
-      elasticsearch-transport (= 7.4.0)
-    elasticsearch-api (7.4.0)
+    elasticsearch (7.9.0)
+      elasticsearch-api (= 7.9.0)
+      elasticsearch-transport (= 7.9.0)
+    elasticsearch-api (7.9.0)
       multi_json
-    elasticsearch-transport (7.4.0)
-      faraday
+    elasticsearch-transport (7.9.0)
+      faraday (~> 1)
       multi_json
-    faraday (0.17.1)
+    faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     hashdiff (1.0.0)
     json (2.3.1)
     mini_portile2 (2.4.0)
     minitest (5.13.0)
-    multi_json (1.14.1)
+    multi_json (1.15.0)
     multipart-post (2.1.1)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
@@ -48,7 +48,7 @@ PLATFORMS
 DEPENDENCIES
   curb (~> 0.9.10)
   dotenv
-  elasticsearch
+  elasticsearch (~> 7.9.0)
   minitest (~> 5.11)
   rake
   simple_doi (>= 1.2.6)!
