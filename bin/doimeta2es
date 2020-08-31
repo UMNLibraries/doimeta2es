@@ -9,7 +9,7 @@ module DOIMeta2ES
 
     class_option :verbosity, type: :numeric, default: 0, desc: 'Show verbose output 0=none, 1=limited, 2=full Elasticsearch output'
 
-    desc "Index metadata", "Index metadata from files on disk or from stdin"
+    desc "index [FILENAME [FILENAME]]", "Index metadata from files on disk or from stdin"
     long_desc <<-LONGDESC
     Parses and indexes Unixref XML or Citeproc JSON DOI metadata files
 
@@ -23,7 +23,7 @@ module DOIMeta2ES
       DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1)).index(options, *files)
     end
 
-    desc "Lookup a DOI", "Lookup metadata for a DOI identifier"
+    desc "lookup --doi=DOI", "Lookup metadata for a DOI identifier"
     long_desc <<-LONGDESC
     Performs a metadata lookup for the DOI provided by --doi=<identifier> in the format
     requested by --type=<type>
@@ -40,7 +40,7 @@ module DOIMeta2ES
       DOIMeta2ES::Runner.new(es_client(options[:verbosity] > 1)).lookup(options)
     end
 
-    desc "Setup indices and mappings", "Create or update indices and mappings in Elasticsearch"
+    desc "setup", "Create or update indices and mappings in Elasticsearch"
     long_desc <<-LONGDESC
     Create or update indices and mappings in Elasticsearch
     LONGDESC
