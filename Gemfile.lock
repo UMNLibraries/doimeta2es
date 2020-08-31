@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/UMNLibraries/simpledoi-ruby.git
-  revision: 8e399dc5d9caf87b385a66dd5dfcdfcffb50ced8
+  revision: c918ac4147a5dfcd32d868c78d4ed10e96a2be34
   specs:
-    simple_doi (1.2.6)
+    simple_doi (1.3.0)
       json
       nokogiri
 
@@ -51,7 +51,7 @@ DEPENDENCIES
   elasticsearch (~> 7.9.0)
   minitest (~> 5.11)
   rake
-  simple_doi (>= 1.2.6)!
+  simple_doi (>= 1.3.0)!
   thor
   webmock (~> 3.3)
 

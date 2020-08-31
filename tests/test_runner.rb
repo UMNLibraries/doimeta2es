@@ -16,34 +16,34 @@ module DOIMeta2ES
 
           # WebMock stubs for metadata lookup reponses
           # Add more stubs as hash keys to reference later
-          get_107589_json: stub_request(:get, 'https://dx.doi.org/10.7589%2F2017-03-057')
+          get_107589_json: stub_request(:get, 'https://doi.org/10.7589%2F2017-03-057')
             .with( headers: { 'Accept' => 'application/vnd.citationstyles.csl+json' })
             .to_return(
               body: File.new("#{fixture_meta_path}/10.7589%2F2017-03-057.json"),
               status: 200,
               headers: { 'content-type' => 'application/citeproc+json' }
             ),
-          get_107589_xml: stub_request(:get, 'https://dx.doi.org/10.7589%2F2017-03-057')
+          get_107589_xml: stub_request(:get, 'https://doi.org/10.7589%2F2017-03-057')
             .with(headers: { 'Accept' => 'application/vnd.crossref.unixref+xml' })
             .to_return(
               body: File.new("#{fixture_meta_path}/10.7589%2F2017-03-057.xml"),
               status: 200,
               headers: { 'content-type' => 'application/unixref+xml' }
             ),
-          get_109999123: stub_request(:get, 'https://dx.doi.org/10.9999%2F123')
+          get_109999123: stub_request(:get, 'https://doi.org/10.9999%2F123')
             .to_return(
               body: File.new("#{fixture_meta_path}/10.9999%2F123.xml"),
               status: 200,
               headers: { 'content-type' => 'application/unixref+xml' }
             ),
-          get_109999456: stub_request(:get, 'https://dx.doi.org/10.9999%2F456')
+          get_109999456: stub_request(:get, 'https://doi.org/10.9999%2F456')
             .to_return(
               body: File.new("#{fixture_meta_path}/10.9999%2F456.xml"),
               status: 200,
               headers: { 'content-type' => 'application/unixref+xml' }
             ),
           # A bad DOI returns a 404
-          get_109999999: stub_request(:get, 'https://dx.doi.org/10.9999%2F999')
+          get_109999999: stub_request(:get, 'https://doi.org/10.9999%2F999')
             .to_return(
               body: '',
               status: 404
